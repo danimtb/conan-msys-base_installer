@@ -10,7 +10,7 @@ class MsysInstallerConan(ConanFile):
     settings = "os", "compiler"
     build_policy = "missing"
     description = "Msys"
-    build_requires = "7z_installer/1.0@conan/stable", "mingw_installer/1.0@conan/stable"
+    build_requires = "7z_installer/1.0@conan/stable"
 
     def configure(self):
         if (self.settings.os != "Windows" and self.settings.compiler != "gcc"):
