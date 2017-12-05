@@ -7,36 +7,47 @@ class MsysInstallerConan(ConanFile):
     version = "1.0"
     license = "http://www.mingw.org/license"
     url = "http://github.com/danimtb/conan-msys-installer"
+    settings = "os", "compiler"
     build_policy = "missing"
     description = "Msys"
-    build_requires = "7z_installer/1.0@conan/stable", "mingw_installer/1.0@conan/stable"   
+    build_requires = "7z_installer/1.0@conan/stable", "mingw_installer/1.0@conan/stable"
+
+    def configure(self):
+        if (self.settings.os != "Windows" and self.settings.compiler != "gcc"):
+            raise Exception("Not valid configuration: %s, %s. %s should be used in Windows, gcc" % (self.settings.os, self.settings.compiler, self.name))
 
     def build(self):
 
         files = {
-            "msys-bash": "https://sourceforge.net/projects/mingw/files/MSYS/Base/bash/bash-3.1.23-1/bash-3.1.23-1-msys-1.0.18-bin.tar.xz",
-            "msys-bzip2": "https://sourceforge.net/projects/mingw/files/MSYS/Base/bzip2/bzip2-1.0.6-1/bzip2-1.0.6-1-msys-1.0.17-bin.tar.lzma",
-            "msys-core": "https://sourceforge.net/projects/mingw/files/MSYS/Base/msys-core/msys-1.0.19-1/msysCORE-1.0.19-1-msys-1.0.19-bin.tar.xz",
-            "msys-core-ext": "https://sourceforge.net/projects/mingw/files/MSYS/Base/msys-core/msys-1.0.19-1/msysCORE-1.0.19-1-msys-1.0.19-ext.tar.xz",
-            "msys-core-lic": "https://sourceforge.net/projects/mingw/files/MSYS/Base/msys-core/msys-1.0.19-1/msysCORE-1.0.19-1-msys-1.0.19-lic.tar.xz",
-            "msys-core-doc": "https://sourceforge.net/projects/mingw/files/MSYS/Base/msys-core/msys-1.0.19-1/msysCORE-1.0.19-1-msys-1.0.19-doc.tar.xz",
-            "msys-coreutils": "https://sourceforge.net/projects/mingw/files/MSYS/Base/coreutils/coreutils-5.97-3/coreutils-5.97-3-msys-1.0.13-bin.tar.lzma",
-            "msys-diffutils": "https://sourceforge.net/projects/mingw/files/MSYS/Base/diffutils/diffutils-2.8.7.20071206cvs-3/diffutils-2.8.7.20071206cvs-3-msys-1.0.13-bin.tar.lzma",
-            "msys-dos2unix": "https://sourceforge.net/projects/mingw/files/MSYS/Extension/dos2unix/dos2unix-7.3.2-1/dos2unix-7.3.2-1-msys-1.0.18-bin.tar.lzma",
-            "msys-file": "https://sourceforge.net/projects/mingw/files/MSYS/Base/file/file-5.04-1/file-5.04-1-msys-1.0.13-bin.tar.lzma",
-            "msys-findutils": "https://sourceforge.net/projects/mingw/files/MSYS/Base/findutils/findutils-4.4.2-2/findutils-4.4.2-2-msys-1.0.13-bin.tar.lzma",
-            "msys-gawk": "https://sourceforge.net/projects/mingw/files/MSYS/Base/gawk/gawk-3.1.7-2/gawk-3.1.7-2-msys-1.0.13-bin.tar.lzma",
-            "msys-grep": "https://sourceforge.net/projects/mingw/files/MSYS/Base/grep/grep-2.5.4-2/grep-2.5.4-2-msys-1.0.13-bin.tar.lzma",
-            "msys-gzip": "https://sourceforge.net/projects/mingw/files/MSYS/Base/gzip/gzip-1.3.12-2/gzip-1.3.12-2-msys-1.0.13-bin.tar.lzma",
-            "msys-less": "https://sourceforge.net/projects/mingw/files/MSYS/Base/less/less-436-2/less-436-2-msys-1.0.13-bin.tar.lzma",
-            "msys-libiconv": "https://sourceforge.net/projects/mingw/files/MSYS/Base/libiconv/libiconv-1.14-1/libiconv-1.14-1-msys-1.0.17-dll-2.tar.lzma",
-            "msys-libintl": "https://sourceforge.net/projects/mingw/files/MSYS/Base/gettext/gettext-0.18.1.1-1/libintl-0.18.1.1-1-msys-1.0.17-dll-8.tar.lzma",
-            "msys-make": "https://sourceforge.net/projects/mingw/files/MSYS/Base/make/make-3.81-3/make-3.81-3-msys-1.0.13-bin.tar.lzma",
-            "msys-sed": "https://sourceforge.net/projects/mingw/files/MSYS/Base/sed/sed-4.2.1-2/sed-4.2.1-2-msys-1.0.13-bin.tar.lzma",
-            "msys-tar": "https://sourceforge.net/projects/mingw/files/MSYS/Base/tar/tar-1.23-1/tar-1.23-1-msys-1.0.13-bin.tar.lzma",
-            "msys-termcap": "https://sourceforge.net/projects/mingw/files/MSYS/Base/termcap/termcap-0.20050421_1-2/termcap-0.20050421_1-2-msys-1.0.13-bin.tar.lzma",
-            "msys-texinfo": "https://sourceforge.net/projects/mingw/files/MSYS/Base/texinfo/texinfo-4.13a-2/texinfo-4.13a-2-msys-1.0.13-bin.tar.lzma",
-            "msys-xz": "https://sourceforge.net/projects/mingw/files/MSYS/Base/xz/xz-5.0.3-1/xz-5.0.3-1-msys-1.0.17-bin.tar.lzma"
+            "msys-bash": "http://prdownloads.sourceforge.net/mingw/bash-3.1.23-1-msys-1.0.18-bin.tar.xz",
+            "msys-bzip2": "http://prdownloads.sourceforge.net/mingw/bzip2-1.0.6-1-msys-1.0.17-bin.tar.lzma",
+            "msys-bzip2-dll": "http://prdownloads.sourceforge.net/mingw/libbz2-1.0.6-1-msys-1.0.17-dll-1.tar.lzma",
+            "msys-core": "http://prdownloads.sourceforge.net/mingw/msysCORE-1.0.19-1-msys-1.0.19-bin.tar.xz",
+            "msys-core-ext": "http://prdownloads.sourceforge.net/mingw/msysCORE-1.0.19-1-msys-1.0.19-ext.tar.xz",
+            "msys-core-lic": "http://prdownloads.sourceforge.net/mingw/msysCORE-1.0.19-1-msys-1.0.19-lic.tar.xz",
+            "msys-core-doc": "http://prdownloads.sourceforge.net/mingw/msysCORE-1.0.19-1-msys-1.0.19-doc.tar.xz",
+            "msys-coreutils": "http://prdownloads.sourceforge.net/mingw/coreutils-5.97-3-msys-1.0.13-bin.tar.lzma",
+            "msys-diffutils": "http://prdownloads.sourceforge.net/mingw/diffutils-2.8.7.20071206cvs-3-msys-1.0.13-bin.tar.lzma",
+            "msys-dos2unix": "http://prdownloads.sourceforge.net/mingw/dos2unix-7.3.2-1-msys-1.0.18-bin.tar.lzma",
+            "msys-file": "http://prdownloads.sourceforge.net/mingw/file-5.04-1-msys-1.0.13-bin.tar.lzma",
+            "msys-magic-dll": "http://prdownloads.sourceforge.net/mingw/libmagic-5.04-1-msys-1.0.13-dll-1.tar.lzma",
+            "msys-findutils": "http://prdownloads.sourceforge.net/mingw/findutils-4.4.2-2-msys-1.0.13-bin.tar.lzma",
+            "msys-gawk": "http://prdownloads.sourceforge.net/mingw/gawk-3.1.7-2-msys-1.0.13-bin.tar.lzma",
+            "msys-grep": "http://prdownloads.sourceforge.net/mingw/grep-2.5.4-2-msys-1.0.13-bin.tar.lzma",
+            "msys-gzip": "http://prdownloads.sourceforge.net/mingw/gzip-1.3.12-2-msys-1.0.13-bin.tar.lzma",
+            "msys-less": "http://prdownloads.sourceforge.net/mingw/less-436-2-msys-1.0.13-bin.tar.lzma",
+            "msys-libiconv": "http://prdownloads.sourceforge.net/mingw/libiconv-1.14-1-msys-1.0.17-dll-2.tar.lzma",
+            "msys-libintl": "http://prdownloads.sourceforge.net/mingw/libintl-0.18.1.1-1-msys-1.0.17-dll-8.tar.lzma",
+            "msys-make": "http://prdownloads.sourceforge.net/mingw/make-3.81-3-msys-1.0.13-bin.tar.lzma",
+            "msys-regex-dll": "http://prdownloads.sourceforge.net/mingw/libregex-1.20090805-2-msys-1.0.13-dll-1.tar.lzma",
+            "msys-sed": "http://prdownloads.sourceforge.net/mingw/sed-4.2.1-2-msys-1.0.13-bin.tar.lzma",
+            "msys-tar": "http://prdownloads.sourceforge.net/mingw/tar-1.23-1-msys-1.0.13-bin.tar.lzma",
+            "msys-termcap": "http://prdownloads.sourceforge.net/mingw/termcap-0.20050421_1-2-msys-1.0.13-bin.tar.lzma",
+            "msys-termcap-dll": "http://prdownloads.sourceforge.net/mingw/libtermcap-0.20050421_1-2-msys-1.0.13-dll-0.tar.lzma",
+            "msys-texinfo": "http://prdownloads.sourceforge.net/mingw/texinfo-4.13a-2-msys-1.0.13-bin.tar.lzma",
+            "msys-xz": "http://prdownloads.sourceforge.net/mingw/xz-5.0.3-1-msys-1.0.17-bin.tar.lzma",
+            "msys-lzma-dll": "http://prdownloads.sourceforge.net/mingw/liblzma-5.0.3-1-msys-1.0.17-dll-5.tar.lzma",
+            "msys-z-dll": "http://prdownloads.sourceforge.net/mingw/zlib-1.2.7-1-msys-1.0.17-dll.tar.lzma"
         }
 
         for util_name in files:
