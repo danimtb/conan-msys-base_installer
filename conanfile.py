@@ -2,9 +2,9 @@ from conans import ConanFile, tools
 import os
 
 
-class MsysInstallerConan(ConanFile):
-    name = "msys_installer"
-    version = "1.0"
+class MsysBaseInstallerConan(ConanFile):
+    name = "msys-base_installer"
+    version = "2013072300"
     license = "http://www.mingw.org/license"
     url = "http://github.com/danimtb/conan-msys-installer"
     settings = "os", "compiler"
